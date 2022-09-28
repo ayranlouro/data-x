@@ -1,10 +1,10 @@
 import { Text, View, StyleSheet } from "react-native";
 import React, { Component } from "react";
 
-export default function About() {
+export default function ServiceScreen() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>About Screen!!!</Text>
+        <Text style={styles.title}>Service Screen!!!</Text>
       </View>
     );
 }

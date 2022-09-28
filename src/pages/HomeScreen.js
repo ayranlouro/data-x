@@ -16,6 +16,7 @@ import Home from "../pages/Home";
 import LogoutScreen from "../pages/LogoutScreen";
 import AboutScreen from "../pages/AboutScreen";
 import DashboardScreen from "../pages/DashboardScreen";
+import ServicesScreen from "../pages/ServicesScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -41,13 +42,23 @@ const HomeScreen = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="Servers"
         component={Home}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Entypo name="home" size={size} color={color} />
+            <Feather name="monitor" size={size} color={color} />
           ),
           headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name="Services"
+        component={ServicesScreen}
+        options={{
+          tabBarIcon: ({ size, color }) => (
+            <Entypo name="cloud" size={size} color={color} />
+          ),
         }}
       />
 

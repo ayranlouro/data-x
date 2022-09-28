@@ -7,6 +7,7 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -20,13 +21,14 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState(null);
   const [serverip, setServerip] = useState(null);
 
-  console.log("Username: " + username)
-  console.log("password: " + password)
-  console.log("serverip: " + serverip)
+  console.log("Username: " + username);
+  console.log("password: " + password);
+  console.log("serverip: " + serverip);
 
   const { isLoading, login, StatusUser } = useContext(AuthContext);
 
   return (
+    // <KeyboardAvoidingView behavior="padding">
     <View style={styles.container}>
       <Spinner visible={isLoading} />
       <Animatable.View
@@ -52,6 +54,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           placeholder="Senha do servidor"
           onChangeText={(text) => setPassword(text)}
+          secureTextEntry={true}
         ></TextInput>
 
         <Text style={styles.title}>Endereço do Nagios</Text>
@@ -68,10 +71,10 @@ const LoginScreen = ({ navigation }) => {
           onPress={() => {
             login(username, password, serverip);
           }}
-        >
-        </Button>
+        ></Button>
       </Animatable.View>
     </View>
+    // </KeyboardAvoidingView>
   );
 };
 

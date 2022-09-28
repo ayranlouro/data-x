@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Button,
   StyleSheet,
@@ -8,9 +8,10 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  Modal,
 } from "react-native";
-import { useFonts } from 'expo-font';
-import { Font } from 'expo';
+import { useFonts } from "expo-font";
+import { Font } from "expo";
 import Spinner from "react-native-loading-spinner-overlay";
 import { AuthContext } from "../context/AuthContext";
 
@@ -34,12 +35,10 @@ const Home = () => {
     serverip,
   } = useContext(AuthContext);
 
-  // console.log('username home: ' + username);
-  // console.log('password home: ' + password);
-  // console.log('serverip home: ' + serverip);
-
-  // console.log(userInfo.data.hostlist);
-  // console.log(userInfo);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [hostModalName, setHostModalName] = useState();
+  const [hostOutput, setHostOutput] = useState();
+  const [hostOutputStatus, setHostOutputStatus] = useState();
 
   const pressHandler = (item) => {
     console.log("Click on: " + item);
@@ -62,27 +61,88 @@ const Home = () => {
       .then((res) => {
         let userInfo = res.data;
         // console.log(res.data.data.host.plugin_output);
-        // console.log(res.data.data);
+        console.log(res.data.data);
+
+        if (res.data.data.host.status === 4) {
+          setHostOutputStatus("CRITICAL");
+        } else {
+          setHostOutputStatus("");
+        }
+        // console.log(res.data.data.host.state_type);
         const output = res.data.data.host.plugin_output;
         console.log("Host: " + hostname + " / Output: " + output);
+        setHostOutput(output);
       })
       .catch((e) => {
         console.log(`Login error ${e}`);
       });
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getHostData(hostModalName);
+      console.log('Disparou...');
+    }, 1000)
+  }, [])
+
+  const modalOpen = (option, hostname) => {
+    if (option === "open") {
+      setModalVisible(true);
+      getHostData(hostname);
+      setHostModalName(hostname);
+    } else {
+      setModalVisible(false);
+    }
+  };
+
   const oneHost = ({ item }) => (
     <View style={styles.item}>
       <View style={styles.avatarContainer}>
+        {/* {hostOutputStatus ? (
+          <Icon name="server-security" size={25} color="red" />
+        ) : (
+          <Icon name="server-security" size={25} color="green" />
+        )} */}
         <Icon name="server-security" size={25} color="green" />
         {/* <Image
           source={require("../../assets/server1.png")}
           style={styles.avatar}
         /> */}
       </View>
-      <TouchableOpacity onPress={() => getHostData(item)}>
+      <TouchableOpacity onPress={() => modalOpen("open", item)}>
         <Text style={styles.name}>{item}</Text>
       </TouchableOpacity>
+
+      <Modal transparent={true} animationType="fade" visible={modalVisible}>
+        <View style={styles.centered_view}>
+          <View style={styles.warning_modal}>
+            {hostOutputStatus ? (
+              <View style={styles.critical_title}>
+                <Text style={styles.text}>
+                  {hostOutputStatus}! {hostModalName}{" "}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.ok_title}>
+                <Text style={styles.text}>OK! {hostModalName} </Text>
+              </View>
+            )}
+
+            {/* <View style={styles.warning_title}>
+              <Text style={styles.text}>WARNING! {hostModalName} </Text>
+            </View> */}
+
+            <View style={styles.warning_body}>
+              <Text style={styles.text}>{hostOutput}</Text>
+            </View>
+            <Button
+              title="Back"
+              style={styles.button}
+              onPress={() => modalOpen("exit")}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 
@@ -120,6 +180,86 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  button: {
+    backgroundColor: "#38A69D",
+    width: "100%",
+    borderRadius: 10,
+    paddingVertifical: 8,
+    marginTop: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  text: {
+    color: "#000000",
+    fontSize: 20,
+    margin: 10,
+    textAlign: "center",
+  },
+  centered_view: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00000050",
+  },
+  warning_body: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  warning_title: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "yellow",
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  critical_title: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  ok_title: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "green",
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+  },
+  warning_modal: {
+    width: 300,
+    height: 300,
+    backgroundColor: "#ffffff",
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 20,
+  },
+  modalViewBegin: {
+    margin: 15,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalViewContainer: {
+    backgroundColor: "#292929",
+    width: "100%",
+    height: 350,
+    borderRadius: 15,
+  },
+  modalSecondText: {
+    paddingTop: 15,
+    color: "red",
+    fontSize: 20,
+  },
+  modalText: {
+    paddingTop: 15,
+    color: "#FFF",
+    fontSize: 28,
   },
   title: {
     alignSelf: "center",
