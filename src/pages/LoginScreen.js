@@ -7,7 +7,8 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -15,6 +16,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import * as Animatable from "react-native-animatable";
 
 import { AuthContext } from "../context/AuthContext";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState(null);
@@ -28,53 +30,55 @@ const LoginScreen = ({ navigation }) => {
   const { isLoading, login, StatusUser } = useContext(AuthContext);
 
   return (
-    // <KeyboardAvoidingView behavior="padding">
-    <View style={styles.container}>
-      <Spinner visible={isLoading} />
-      <Animatable.View
-        animation="fadeInLeft"
-        delay={500}
-        style={styles.containerHeader}
-      >
-        <Text style={styles.message}>Bem-vindo(a)</Text>
-      </Animatable.View>
-
-      <Animatable.View animation="fadeInUp" style={styles.containerForm}>
-        <Text style={styles.title}>Username</Text>
-        <TextInput
-          style={styles.input}
-          value={username}
-          placeholder="Usuario do servidor"
-          onChangeText={(text) => setUsername(text)}
-        ></TextInput>
-
-        <Text style={styles.title}>Senha</Text>
-        <TextInput
-          style={styles.input}
-          value={password}
-          placeholder="Senha do servidor"
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry={true}
-        ></TextInput>
-
-        <Text style={styles.title}>Endereço do Nagios</Text>
-        <TextInput
-          style={styles.input}
-          value={serverip}
-          placeholder="Endereço do Nagios (Ex. 192.168.0.1)"
-          onChangeText={(text) => setServerip(text)}
-        ></TextInput>
-
-        <Button
-          title="Acessar"
-          style={styles.button}
-          onPress={() => {
-            login(username, password, serverip);
-          }}
-        ></Button>
-      </Animatable.View>
-    </View>
-    // </KeyboardAvoidingView>
+    <KeyboardAwareScrollView
+      style={{ backgroundColor: "#FFF" }}
+      enableOnAndroid
+      extraScrollHeight={50}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Spinner visible={isLoading} />
+          <Animatable.View
+            animation="fadeInLeft"
+            delay={500}
+            style={styles.containerHeader}
+          >
+            <Text style={styles.message}>Bem-vindo(a)</Text>
+          </Animatable.View>
+          <Animatable.View animation="fadeInUp" style={styles.containerForm}>
+            <Text style={styles.title}>Username</Text>
+            <TextInput
+              style={styles.input}
+              value={username}
+              placeholder="Usuario do servidor"
+              onChangeText={(text) => setUsername(text)}
+            ></TextInput>
+            <Text style={styles.title}>Senha</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              placeholder="Senha do servidor"
+              onChangeText={(text) => setPassword(text)}
+              secureTextEntry={true}
+            ></TextInput>
+            <Text style={styles.title}>Endereço do Nagios</Text>
+            <TextInput
+              style={styles.input}
+              value={serverip}
+              placeholder="Endereço do Nagios (Ex. 192.168.0.1)"
+              onChangeText={(text) => setServerip(text)}
+            ></TextInput>
+            <Button
+              title="Acessar"
+              style={styles.button}
+              onPress={() => {
+                login(username, password, serverip);
+              }}
+            ></Button>
+          </Animatable.View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAwareScrollView>
   );
 };
 
