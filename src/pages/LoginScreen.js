@@ -85,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#38A69D",
+    backgroundColor: "#070618",
   },
   containerHeader: {
     marginTop: "14%",
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#38A69D",
+    backgroundColor: "#070618",
     width: "100%",
     borderRadius: 10,
     paddingVertifical: 8,

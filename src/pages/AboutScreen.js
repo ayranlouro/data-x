@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   aboutLayout: {
-    backgroundColor: "#38A69D",
+    backgroundColor: "#070618",
     paddingHorizontal: 30,
     marginVertical: 30,
   },
