@@ -24,9 +24,9 @@ export default function WelcomeScreen() {
         style={styles.containerForm}
       >
         <Text style={styles.title}>
-          DATA-X, monitore seus negócios de qualquer lugar!
+          Bem vindo ao DATA-X!{'\n\n'}Monitore seus negócios {'\n'}de qualquer lugar!
         </Text>
-        <Text style={styles.text}>Faça o login para começar.</Text>
+        <Text style={styles.text}>{'\n'}Faça o login para começar:</Text>
         <TouchableOpacity style={styles.button} onPress={ () => navigation.navigate('Login', { screen: 'Login' })}>
           <Text style={styles.buttonText}>Acessar</Text>
         </TouchableOpacity>
@@ -38,11 +38,11 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#38A69D",
+    backgroundColor: "#070618",
   },
   containerLogo: {
     flex: 2,
-    backgroundColor: "#38A69D",
+    backgroundColor: "#070618",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -57,15 +57,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 28,
+    marginTop: 20,
     marginBottom: 12,
+    textAlign: 'center',
   },
   text: {
     color: "#a1a1a1",
   },
   button: {
     position: "absolute",
-    backgroundColor: "#38A69D",
+    backgroundColor: "#F12987",
     borderRadius: 50,
     paddingVertical: 8,
     width: "60%",
