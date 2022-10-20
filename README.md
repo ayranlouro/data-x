@@ -1,11 +1,28 @@
-# data-x mod v2
-[data-x app mobile react-expo]
-##		Install Node LTS: 
-  	https://nodejs.org/en/
-##		Install Expo:
-  	npm i -g expo-cli
-##		Install app:
-  	https://apps.apple.com/br/app/expo-go/id982107779
-## Open project and run:
-  	expo start
-# Read QRcode and joy!
+# Data-X Aplicativo Mobile
+
+Este projeto construido com tecnologia React-Native visa mostrar o monitoramento de informações importantes que são buscada de servidores que compoe o ecossistema dos negócios.
+
+## Demonstração
+
+Insira um gif ou um link de alguma demonstração
+
+## Funcionalidades
+
+- Push Notification
+- Alertas de eventos em real-time
+- Multiplataforma
+
+## Deploy
+
+Para fazer o deploy desse projeto rode
+
+```bash
+  git clone <url>
+  npm install
+  expo start
+```
+
+## Autores
+
+- [@ayranlouro](https://www.github.com/ayranlouro)
+- [@mtsgsr](https://www.github.com/mtsgsr)
