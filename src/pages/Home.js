@@ -20,7 +20,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
 import { Buffer } from "buffer";
 
-import { NavigationContainer } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
   const {
@@ -62,7 +62,7 @@ const Home = () => {
     setData(propertyNames);
   };
   // Esta função deixa automática as chamadas de API acima.
-  useEffect(() => {
+  useFocusEffect(() => {
     const interval = setInterval(() => {
       console.log("This will run every second! " + Date());
       getData();
