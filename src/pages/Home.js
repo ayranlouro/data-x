@@ -39,7 +39,7 @@ const Home = () => {
   const [hostModalName, setHostModalName] = useState();
   const [hostOutput, setHostOutput] = useState();
   const [hostOutputStatus, setHostOutputStatus] = useState();
-  const [allData, setAllData] = useState();
+  const [allData, setAllData] = useState();  
 
   const [data, setData] = useState(null);
 
@@ -90,8 +90,8 @@ const Home = () => {
       </View>
 
       <TouchableOpacity>
-        <Text style={styles.name}>Host: {user}</Text>
-        <Text style={styles.name}>{description}</Text>
+        <Text style={styles.wrapText}>Host: {user}</Text>
+        <Text style={styles.wrapText}>{description}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -107,15 +107,15 @@ const Home = () => {
   );
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Spinner visible={isLoading} />
-      <Text style={styles.title}>Monitoring Servers</Text>
+      <Text style={styles.title}></Text>
       <FlatList
-        listHeaderComponentStyle={styles.listHeader}
-        listHeaderComponent={headerComponent}
+        // listHeaderComponentStyle={styles.listHeader}
+        // listHeaderComponent={headerComponent}
         data={data}
         renderItem={renderItem}
-        ItemSeparatorComponent={itemSeparator}
+        // ItemSeparatorComponent={itemSeparator}
         ListEmptyComponent={
           <Text>Os dados serão carregados em instantes.</Text>
         }
@@ -127,17 +127,9 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: -15,
     alignItems: "center",
     justifyContent: "center",
-  },
-  button: {
-    backgroundColor: "#38A69D",
-    width: "100%",
-    borderRadius: 10,
-    paddingVertifical: 8,
-    marginTop: 14,
-    justifyContent: "center",
-    alignItems: "center",
   },
   text: {
     color: "#000000",
@@ -145,79 +137,10 @@ const styles = StyleSheet.create({
     margin: 10,
     textAlign: "center",
   },
-  centered_view: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#00000050",
-  },
-  warning_body: {
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  warning_title: {
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  critical_title: {
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "red",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  ok_title: {
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "green",
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-  },
-  warning_modal: {
-    width: 300,
-    height: 300,
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#000",
-    borderRadius: 20,
-  },
-  modalViewBegin: {
-    margin: 15,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  modalViewContainer: {
-    backgroundColor: "#292929",
-    width: "100%",
-    height: 350,
-    borderRadius: 15,
-  },
-  modalSecondText: {
-    paddingTop: 15,
-    color: "red",
-    fontSize: 20,
-  },
-  modalText: {
-    paddingTop: 15,
-    color: "#FFF",
-    fontSize: 28,
-  },
   title: {
     alignSelf: "center",
     fontSize: 20,
     fontWeight: "600",
-  },
-  welcome: {
-    fontSize: 18,
-    marginBottom: 8,
   },
   listHeader: {
     height: 55,
@@ -229,17 +152,35 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: "bold",
   },
-  item: {
+  image: {
+    width: 50,
+    height: 50,
+  },
+  wrapText: {
     flex: 1,
+    marginLeft: 10,
+    justifyContent: "center",
+    fontSize: 14,
+  },
+  item: {
     flexDirection: "row",
-    alignItems: "center",
-    paddingVertifical: 13,
+    marginBottom: 15,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    padding: 10,
   },
   avatarContainer: {
     // backgroundColor: "#D9D9D9",
     borderRadius: 100,
-    height: 89,
-    width: 89,
+    height: 60,
+    width: 60,
     justifyContent: "center",
     alignItems: "center",
   },

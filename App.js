@@ -9,7 +9,7 @@ LogBox.ignoreAllLogs();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer backgroundColor="#F12987" barStyle="light-content">
       <StatusBar style="auto" />
       <AuthProvider>
         <Navigation />

@@ -48,12 +48,12 @@ const HomeScreen = () => {
           tabBarIcon: ({ size, color }) => (
             <Feather name="monitor" size={size} color={color} />
           ),
-          headerShown: false,
+          headerShown: true,
         }}
       />
 
       <Tab.Screen
-        name="Services"
+        name="Alerts"
         component={ServicesScreen}
         options={{
           tabBarIcon: ({ size, color }) => (

@@ -8,15 +8,15 @@ import {
 } from "react-native";
 import React from "react";
 
-import DefaultImage from '../../assets/ayran_2d.jpg';
+import DefaultImage from '../../assets/logo.png';
 
 const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
 
 const About = () => {
   return (
     <View style={styles.aboutContainer}>
-      <Text style={styles.mainHeader}> Ayran Louro </Text>
-      <Text style={styles.paraStyle}> Analista de sistemas 😀 </Text>
+      <Text style={styles.mainHeader}> Aplicativo de monitoramento </Text>
+      <Text style={styles.paraStyle}> Data-X 😀 </Text>
 
       <View>
         <Image

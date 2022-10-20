@@ -1,124 +1,150 @@
-import React, { useContext, useState, useEffect } from "react";
 import {
-  SafeAreaView,
-  View,
+  ActivityIndicator,
   FlatList,
-  StyleSheet,
   Text,
-  StatusBar,
-  TouchableOpacity,
+  View,
+  StyleSheet,
   Image,
+  ScrollView,
+  StatusBar,
 } from "react-native";
-
-import axios from "axios";
+import React, { Component, useEffect, useState, useContext } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "../context/AuthContext";
 import { Buffer } from "buffer";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
-
-const getHostData = async (hostname) => {
-  const token = Buffer.from("nagiosadmin:nagiosxi", "utf8").toString("base64");
-  const response = await axios
-    .get(`http://192.168.0.20/nagios/cgi-bin/statusjson.cgi`, {
-      params: {
-        query: "hostlist",
-        details: "true",
-      },
-      headers: {
-        Authorization: `Basic ${token}`,
-      },
-    })
-    .then((res) => {
-      let hosts = res.data.data;
-      console.log(hosts);
-      setData(hosts);
-      // console.log(Object.entries(hosts[0]));
-    })
-    .catch((e) => {
-      console.log(`Login error ${e}`);
-    });
-};
-
-const Item = ({ title, id }) => (
-  <View style={styles.item}>
-    <TouchableOpacity onPress={() => getHostData("abc")}>
-      <Text style={styles.title}>ID: {id}</Text>
-      <Text style={styles.title}>Title: {title}</Text>
-    </TouchableOpacity>
-  </View>
-);
+const BG_IMAGE = "";
 
 const ServiceScreen = () => {
-  const [data, setData] = useState(null);
+  const {
+    userInfo,
+    logout,
+    login,
+    setStatusUser,
+    StatusUser,
+    username,
+    password,
+    serverip,
+  } = useContext(AuthContext);
+  const [data, setData] = useState([]);
+  const [isLoading, setisLoading] = useState(true);
 
-  const getData = async () => {
+  // useEffect(() => {
+  //   getListPhotos();
+  //   console.log("Request do alerts disparado");
+  //   return () => {};
+  // }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("ALERTS DISPARADO " + Date());
+      getListPhotos();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getListPhotos = () => {
+    // const apiURL = "https://jsonplaceholder.typicode.com/photos";
+
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
     );
-    const resp = await fetch(
-      "http://192.168.0.20/nagios/cgi-bin/statusjson.cgi?query=hostlist&details=true",
+
+    fetch(
+      `http://${serverip}/nagios/cgi-bin/archivejson.cgi?query=alertlist&count=10&dateformat=%25d%2F%25m%2F%25y+%25H%3A%25M%3A%25S&starttime=1666216620&endtime=-1`,
       {
         headers: {
           Authorization: "Basic " + token,
         },
       }
-    );
-    // const resp = await fetch("https://api.sampleapis.com/coffee/hot");
-    const data = await resp.json();
-    console.log(Object.values(data.data.hostlist))
-    const propertyNames = Object.values(data.data.hostlist);
-    setData(propertyNames);
+    )
+      .then((res) => res.json())
+      .then((resJson) => {
+        const propertyNames = Object.values(resJson.data.alertlist);
+        setData(propertyNames);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log("Request API Error", error);
+      })
+      .finally(() => setisLoading(false));
   };
-  //on first mount, fetch data.
-  useEffect(() => {
-    getData();
-  }, []);
 
-  const Item = ({ user, index, description }) => (
-    <View>
-      <Text style={styles.title}>
-        ({index}) - {user}
-      </Text>
-      <Text style={styles.item}>Output: {description}</Text>
-    </View>
-  );
-
-  const renderItem = ({ item, index }) => (
-    <Item user={item.name} index={index} description={item.plugin_output} />
-  );
+  const renderItem = ({ item, index }) => {
+    return (
+      <View style={styles.item}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJB0WbMSMLgru8uY7OI_I5ixwMCSW-p9w4zPFSdWV4As5vQQ9GAYx-&usqp=CAU",
+          }}
+          resizeMode="contain"
+        />
+        <View style={styles.wrapText}>
+          <Text style={styles.fontSize}>
+            {"Host: " +
+              item.host_name +
+              "\n" +
+              "Service: " +
+              item.description +
+              "\n" +
+              "Error: " +
+              item.plugin_output +
+              "\n" +
+              "Date: " +
+              item.timestamp}
+          </Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
-    <View style={styles.container}>
-      {data && <FlatList data={data} renderItem={renderItem} />}
-    </View>
+    <SafeAreaView style={styles.container}>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => `key-${item.id}`}
+          renderItem={renderItem}
+          contentContainerStyle={{ padding: 20 }}
+        ></FlatList>
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    marginTop: -50,
+  },
+  fontSize: {
+    fontSize: 12,
+  },
+  image: {
+    width: 50,
+    height: 50,
+  },
+  wrapText: {
+    flex: 1,
+    marginLeft: 10,
+    justifyContent: "center",
   },
   item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 18,
+    flexDirection: "row",
+    marginBottom: 20,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    padding: 10,
   },
 });
 
