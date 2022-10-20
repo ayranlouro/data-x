@@ -1,18 +1,16 @@
 import React from "react";
-
-import { StyleSheet, Text, View, LogBox, StatusBar } from "react-native";
-
+import { StyleSheet, LogBox } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-
 import Navigation from "./src/components/Navigation";
 import { AuthProvider } from "./src/context/AuthContext";
+import { StatusBar } from "expo-status-bar";
 
 LogBox.ignoreAllLogs();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor="#38A69D" barStyle="light-content" />
+      <StatusBar style="auto" />
       <AuthProvider>
         <Navigation />
       </AuthProvider>
