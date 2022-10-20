@@ -4,14 +4,13 @@ import {
   Text,
   TextInput,
   View,
-  Button,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import Icon from "react-native-vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 import * as Animatable from "react-native-animatable";
 
@@ -31,7 +30,9 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <KeyboardAwareScrollView
-      style={{ backgroundColor: "#FFF" }}
+      style={{
+        backgroundColor: "#FFF",
+      }}
       enableOnAndroid
       extraScrollHeight={50}
     >
@@ -39,21 +40,20 @@ const LoginScreen = ({ navigation }) => {
         <View style={styles.container}>
           <Spinner visible={isLoading} />
           <Animatable.View
-            animation="fadeInLeft"
-            delay={500}
+            delay={300}
+            animation="fadeIn"
             style={styles.containerHeader}
           >
-            <Text style={styles.message}>Bem-vindo(a)</Text>
+            <AntDesign name="login" size={70} color="#274060" />
           </Animatable.View>
-          <Animatable.View animation="fadeInUp" style={styles.containerForm}>
-            <Text style={styles.title}>Username</Text>
+
+          <Animatable.View animation="fadeInUp">
             <TextInput
               style={styles.input}
               value={username}
               placeholder="Usuario do servidor"
               onChangeText={(text) => setUsername(text)}
             ></TextInput>
-            <Text style={styles.title}>Senha</Text>
             <TextInput
               style={styles.input}
               value={password}
@@ -61,20 +61,21 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={(text) => setPassword(text)}
               secureTextEntry={true}
             ></TextInput>
-            <Text style={styles.title}>Endereço do Nagios</Text>
             <TextInput
               style={styles.input}
               value={serverip}
               placeholder="Endereço do Nagios (Ex. 192.168.0.1)"
               onChangeText={(text) => setServerip(text)}
             ></TextInput>
-            <Button
-              title="Acessar"
+            <TouchableOpacity
               style={styles.button}
               onPress={() => {
                 login(username, password, serverip);
               }}
-            ></Button>
+              activeOpacity={0.5}
+            >
+              <Text style={styles.buttonText}>Acessar</Text>
+            </TouchableOpacity>
           </Animatable.View>
         </View>
       </TouchableWithoutFeedback>
@@ -85,49 +86,36 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#070618",
-  },
-  containerHeader: {
-    marginTop: "14%",
-    marginBottom: "8%",
-    paddingStart: "5%",
-  },
-  message: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#FFF",
-  },
-  containerForm: {
-    backgroundColor: "#FFF",
-    flex: 1,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
     paddingStart: "5%",
     paddingEnd: "5%",
   },
-  title: {
-    fontSize: 20,
-    marginTop: 28,
+  containerHeader: {
+    marginTop: 80,
+    marginBottom: 50,
+    alignItems: "center",
   },
   input: {
-    borderBottomWidth: 1,
-    height: 40,
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
+    borderRadius: 4,
+    marginTop: 16,
+    marginBottom: 8,
     fontSize: 16,
+    padding: 12,
   },
   button: {
-    backgroundColor: "#070618",
-    width: "100%",
-    borderRadius: 10,
-    paddingVertifical: 8,
-    marginTop: 14,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#274060",
+    borderRadius: 4,
+    paddingVertical: 12,
+    marginTop: 24,
+    width: "80%",
+    alignSelf: "center",
   },
   buttonText: {
     color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
