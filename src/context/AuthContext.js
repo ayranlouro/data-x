@@ -16,12 +16,11 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [serverip, setServerIP] = useState("");
+  const [errorStatus, setErrorStatus] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   
   const login = async (username, password, serverip) => {
     setIsLoading(true);
-    // console.log("Username: " + username);
-    // console.log("Password: " + password);
-    // console.log("ServerIP: " + serverip);
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
     );
@@ -49,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         console.log(`Login error ${e}`);
         setIsLoading(false);
         setStatusUser("Failed");
+        setErrorStatus(true);
+        setErrorMsg(e.message);
       });
   };
 
@@ -71,6 +72,8 @@ export const AuthProvider = ({ children }) => {
         username,
         password,
         serverip,
+        errorStatus,
+        errorMsg
       }}
     >
       {children}

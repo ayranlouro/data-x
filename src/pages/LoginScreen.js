@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [serverip, setServerip] = useState(null);
-  const { isLoading, login } = useContext(AuthContext);
+  const { isLoading, login, errorStatus, errorMsg } = useContext(AuthContext);
   const [isChecked, setChecked] = useState(false);
   const [secureText, setSecureText] = useState(true);
   const [eyeName, setEyeName] = useState("eye");
@@ -161,6 +161,7 @@ const LoginScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
+          {errorStatus == true ? <Text>{errorMsg}</Text> : ""}
         </Animatable.View>
       </View>
     </KeyboardAwareScrollView>

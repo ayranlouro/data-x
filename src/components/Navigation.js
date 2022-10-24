@@ -18,29 +18,9 @@ const Navigation = () => {
   // console.log(userInfo.result.type_text);
   const [StatePage, setStatePage] = useState();
 
-  // setStatePage(true);
-
-  // userInfo.result ? true : false;
-  // if (userInfo.result.type_text === "Success") {
-  //   setStatePage(true);
-  // }else{
-  //   setStatePage(false);
-  // }
-
   return (
     // <NavigationContainer>
     <Stack.Navigator>
-      {/* <Stack.Screen
-        name="Welcome"
-        component={WelcomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      /> */}
-
       {userInfo.result ? (
         <Stack.Screen
           name="Home"
@@ -62,33 +42,6 @@ const Navigation = () => {
           />
         </>
       )}
-
-      {/* {userInfo.result ? (
-        <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      ) : ''} */}
-
-      {/* {userInfo.result ? (
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-        />
-      ) : (
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-      )}
-      <Stack.Screen
-        name="Login2"
-        component={LoginScreen2}
-        options={{ headerShown: false }}
-      /> */}
     </Stack.Navigator>
     // <NavigationContainer>
   );
