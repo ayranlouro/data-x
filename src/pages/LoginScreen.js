@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
             setUsername(user);
             setPassword(pass);
             setServerip(server);
-            if (checked == "true") {
+            if (checked === "true") {
               setChecked(true);
             }
           }
@@ -83,7 +83,7 @@ const LoginScreen = ({ navigation }) => {
   );
 
   const handleEye = () => {
-    eyeName == "eye" ? setEyeName("eyeo") : setEyeName("eye");
+    eyeName === "eye" ? setEyeName("eyeo") : setEyeName("eye");
     secureText ? setSecureText(false) : setSecureText(true);
   };
 
