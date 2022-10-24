@@ -1,32 +1,91 @@
-import React, { useContext, useState } from "react";
-
+import React, { useContext, useState, useCallback } from "react";
 import {
   Text,
   TextInput,
   View,
   StyleSheet,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
 import * as Animatable from "react-native-animatable";
-
 import { AuthContext } from "../context/AuthContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Checkbox from "expo-checkbox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [serverip, setServerip] = useState(null);
+  const { isLoading, login } = useContext(AuthContext);
+  const [isChecked, setChecked] = useState(false);
+  const [secureText, setSecureText] = useState(true);
+  const [eyeName, setEyeName] = useState("eye");
 
-  console.log("Username: " + username);
-  console.log("password: " + password);
-  console.log("serverip: " + serverip);
+  const handlePress = async () => {
+    try {
+      login(username, password, serverip);
+      if (isChecked === true) {
+        storeData();
+      } else {
+        AsyncStorage.clear();
+      }
+    } catch (e) {
+      alert(e);
+    }
+  };
 
-  const { isLoading, login, StatusUser } = useContext(AuthContext);
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem("username", username);
+      await AsyncStorage.setItem("password", password);
+      await AsyncStorage.setItem("serverip", serverip);
+      await AsyncStorage.setItem("checked", isChecked.toString());
+    } catch (e) {
+      // saving error
+      alert(e);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const getData = async () => {
+        try {
+          const user = await AsyncStorage.getItem("username");
+          const pass = await AsyncStorage.getItem("password");
+          const server = await AsyncStorage.getItem("serverip");
+          const checked = await AsyncStorage.getItem("checked");
+          if (user !== null && pass !== null && server !== null) {
+            // value previously stored
+            setUsername(user);
+            setPassword(pass);
+            setServerip(server);
+            if (checked == "true") {
+              setChecked(true);
+            }
+          }
+        } catch (e) {
+          // error reading value
+          alert(e);
+        }
+      };
+
+      getData();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+
+  const handleEye = () => {
+    eyeName == "eye" ? setEyeName("eyeo") : setEyeName("eye");
+    secureText ? setSecureText(false) : setSecureText(true);
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -34,51 +93,76 @@ const LoginScreen = ({ navigation }) => {
         backgroundColor: "#FFF",
       }}
       enableOnAndroid
-      extraScrollHeight={50}
+      extraScrollHeight={80}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <Spinner visible={isLoading} />
-          <Animatable.View
-            delay={300}
-            animation="fadeIn"
-            style={styles.containerHeader}
-          >
-            <AntDesign name="login" size={70} color="#274060" />
-          </Animatable.View>
+      <View style={styles.container}>
+        <Spinner visible={isLoading} />
+        <Animatable.View
+          delay={300}
+          animation="fadeIn"
+          style={styles.containerHeader}
+        >
+          <AntDesign name="login" size={70} color="#274060" />
+        </Animatable.View>
 
-          <Animatable.View animation="fadeInUp">
-            <TextInput
-              style={styles.input}
-              value={username}
-              placeholder="Usuario do servidor"
-              onChangeText={(text) => setUsername(text)}
-            ></TextInput>
+        <Animatable.View animation="fadeInUp">
+          <TextInput
+            style={styles.input}
+            value={username}
+            placeholder="Usuario do servidor"
+            onChangeText={(text) => setUsername(text)}
+          ></TextInput>
+          <View style={{ position: "relative" }}>
             <TextInput
               style={styles.input}
               value={password}
               placeholder="Senha do servidor"
               onChangeText={(text) => setPassword(text)}
-              secureTextEntry={true}
-            ></TextInput>
-            <TextInput
-              style={styles.input}
-              value={serverip}
-              placeholder="Endereço do Nagios (Ex. 192.168.0.1)"
-              onChangeText={(text) => setServerip(text)}
-            ></TextInput>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                login(username, password, serverip);
+              secureTextEntry={secureText}
+            />
+            <AntDesign
+              name={eyeName}
+              size={25}
+              color="#274060"
+              style={{
+                position: "absolute",
+                top: 20,
+                right: 10,
+                padding: 10,
               }}
-              activeOpacity={0.5}
-            >
-              <Text style={styles.buttonText}>Acessar</Text>
-            </TouchableOpacity>
-          </Animatable.View>
-        </View>
-      </TouchableWithoutFeedback>
+              onPress={handleEye}
+            />
+          </View>
+          <TextInput
+            style={styles.input}
+            value={serverip}
+            placeholder="Endereço do Nagios (Ex. 192.168.0.1)"
+            onChangeText={(text) => setServerip(text)}
+          ></TextInput>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              marginVertical: 5,
+            }}
+          >
+            <Checkbox
+              value={isChecked}
+              onValueChange={setChecked}
+              style={{ marginHorizontal: 10 }}
+              color="#274060"
+            />
+            <Text>Lembrar-me</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handlePress}
+            activeOpacity={0.5}
+          >
+            <Text style={styles.buttonText}>Acessar</Text>
+          </TouchableOpacity>
+        </Animatable.View>
+      </View>
     </KeyboardAwareScrollView>
   );
 };
