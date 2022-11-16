@@ -175,7 +175,10 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 50,
-    height: 50,
+    height: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+
   },
   wrapText: {
     flex: 1,
