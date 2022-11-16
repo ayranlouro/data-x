@@ -149,6 +149,10 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     marginTop: 20,
+    width: '90%',
+    marginLeft: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: "row",
     marginBottom: 5,
     borderRadius: 20,
