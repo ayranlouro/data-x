@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../context/AuthContext";
 import { Buffer } from "buffer";
 
+import DropDownPicker from "react-native-dropdown-picker";
+
 import { useFocusEffect } from "@react-navigation/native";
 
 const BG_IMAGE = "";
@@ -31,6 +33,15 @@ const ServiceScreen = () => {
   const [data, setData] = useState([]);
   const [isLoading, setisLoading] = useState(true);
 
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("24");
+  const [items, setItems] = useState([
+    { label: "Time elapsed 24h", value: "24" },
+    { label: "Time elapsed 12h", value: "12" },
+    { label: "Time elapsed 8h", value: "8" },
+    { label: "Time elapsed 4h", value: "4" },
+  ]);
+
   useFocusEffect(() => {
     const interval = setInterval(() => {
       console.log("ALERTS DISPARADO " + Date());
@@ -40,8 +51,19 @@ const ServiceScreen = () => {
   }, []);
 
   const getListAlerts = () => {
-    var timestamp = Math.floor(+new Date() / 1000);
-    timestamp = timestamp - 86400;
+    if (value === "24") {
+      var timestamp = Math.floor(+new Date() / 1000);
+      timestamp = timestamp - 86400;
+    } else if (value === "12") {
+      var timestamp = Math.floor(+new Date() / 1000);
+      timestamp = timestamp - 43200;
+    } else if (value === "8") {
+      var timestamp = Math.floor(+new Date() / 1000);
+      timestamp = timestamp - 28800;
+    } else {
+      var timestamp = Math.floor(+new Date() / 1000);
+      timestamp = timestamp - 14400;
+    }
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
     );
@@ -97,6 +119,15 @@ const ServiceScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        style={[styles.dropdown]}
+      />
       {isLoading ? (
         <ActivityIndicator style={styles.indicator} size="large" />
       ) : (
@@ -116,10 +147,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: -50,
   },
-  indicator:{
+  dropdown: {
+    marginTop: 20,
+    flexDirection: "row",
+    marginBottom: 5,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    padding: 10,
+  },
+  indicator: {
     flex: 1,
-    justifyContent: "center"
-  }, 
+    justifyContent: "center",
+  },
   fontSize: {
     fontSize: 12,
   },
