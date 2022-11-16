@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../context/AuthContext";
 import { Buffer } from "buffer";
 
+import { useFocusEffect } from "@react-navigation/native";
+
 const BG_IMAGE = "";
 
 const ServiceScreen = () => {
@@ -29,29 +31,23 @@ const ServiceScreen = () => {
   const [data, setData] = useState([]);
   const [isLoading, setisLoading] = useState(true);
 
-  // useEffect(() => {
-  //   getListPhotos();
-  //   console.log("Request do alerts disparado");
-  //   return () => {};
-  // }, []);
-
-  useEffect(() => {
+  useFocusEffect(() => {
     const interval = setInterval(() => {
       console.log("ALERTS DISPARADO " + Date());
-      getListPhotos();
+      getListAlerts();
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const getListPhotos = () => {
-    // const apiURL = "https://jsonplaceholder.typicode.com/photos";
-
+  const getListAlerts = () => {
+    var timestamp = Math.floor(+new Date() / 1000);
+    timestamp = timestamp - 86400;
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
     );
 
     fetch(
-      `http://${serverip}/nagios/cgi-bin/archivejson.cgi?query=alertlist&count=10&dateformat=%25d%2F%25m%2F%25y+%25H%3A%25M%3A%25S&starttime=1666216620&endtime=-1`,
+      `http://${serverip}/nagios/cgi-bin/archivejson.cgi?query=alertlist&count=10&dateformat=%25d%2F%25m%2F%25y+%25H%3A%25M%3A%25S&starttime=${timestamp}&endtime=-1&servicestates=critical`,
       {
         headers: {
           Authorization: "Basic " + token,
@@ -102,7 +98,7 @@ const ServiceScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator style={styles.indicator} size="large" />
       ) : (
         <FlatList
           data={data}
@@ -120,6 +116,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: -50,
   },
+  indicator:{
+    flex: 1,
+    justifyContent: "center"
+  }, 
   fontSize: {
     fontSize: 12,
   },

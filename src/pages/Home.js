@@ -39,7 +39,7 @@ const Home = () => {
   const [hostModalName, setHostModalName] = useState();
   const [hostOutput, setHostOutput] = useState();
   const [hostOutputStatus, setHostOutputStatus] = useState();
-  const [allData, setAllData] = useState();  
+  const [allData, setAllData] = useState();
 
   const [data, setData] = useState(null);
 
@@ -111,11 +111,8 @@ const Home = () => {
       <Spinner visible={isLoading} />
       <Text style={styles.title}></Text>
       <FlatList
-        // listHeaderComponentStyle={styles.listHeader}
-        // listHeaderComponent={headerComponent}
         data={data}
         renderItem={renderItem}
-        // ItemSeparatorComponent={itemSeparator}
         ListEmptyComponent={
           <Text>Os dados serão carregados em instantes.</Text>
         }
