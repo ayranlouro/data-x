@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  ActivityIndicator
 } from "react-native";
 import { useFonts } from "expo-font";
 import { Font } from "expo";
@@ -41,9 +42,13 @@ const Home = () => {
   const [hostOutputStatus, setHostOutputStatus] = useState();
   const [allData, setAllData] = useState();
 
+  const[now, setNow] = useState(null);
+
   const [data, setData] = useState(null);
 
   const getData = async () => {
+    setNow(new Date());
+
     // Função que irá pegar os dados (host + check) via API do servidor Nagios.
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
@@ -69,14 +74,6 @@ const Home = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const headerComponent = () => {
-    return <Text style={styles.bigTitle}>Hosts</Text>;
-  };
-
-  const itemSeparator = () => {
-    return <View style={styles.separator} />;
-  };
 
   // Função que renderiza os itens na tela. (Host + Output de seu monitoramento + icon).
   const Item = ({ user, index, description, status }) => (
@@ -114,7 +111,7 @@ const Home = () => {
         data={data}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text>Os dados serão carregados em instantes.</Text>
+          <ActivityIndicator style={styles.indicator} size="large" />
         }
       />
     </SafeAreaView>
@@ -125,7 +122,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: -15,
-    alignItems: "center",
+  },
+  indicator: {
+    flex: 1,
+    marginTop: '60%',
     justifyContent: "center",
   },
   text: {
@@ -155,14 +155,16 @@ const styles = StyleSheet.create({
   },
   wrapText: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 1,
     justifyContent: "center",
-    fontSize: 14,
+    fontSize: 12,
   },
   item: {
     flexDirection: "row",
-    marginBottom: 15,
+    marginBottom: 20,
     borderRadius: 15,
+    width: '90%',
+    marginLeft: 20,
     backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {

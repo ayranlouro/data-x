@@ -178,7 +178,6 @@ const styles = StyleSheet.create({
     height: 70,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   wrapText: {
     flex: 1,

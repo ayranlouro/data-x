@@ -161,7 +161,7 @@ const LoginScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
-          {errorStatus == true ? <Text>{errorMsg}</Text> : ""}
+          {errorStatus == true ? <Text style={styles.errorMsg}>{errorMsg}</Text> : ""}
         </Animatable.View>
       </View>
     </KeyboardAwareScrollView>
@@ -173,6 +173,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingStart: "5%",
     paddingEnd: "5%",
+  },
+  errorMsg:{
+    color: 'white',
+    backgroundColor: "#842029",
+    borderColor: "#f5c2c7",
+    // border: '1px solid transparent',
+    borderRadius: 10,
+    paddingVertical: 12,
+    marginTop: 24,
+    width: "80%",
+    alignSelf: "center",
+    textAlign: "center",
   },
   containerHeader: {
     marginTop: 80,
