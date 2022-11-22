@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useInterval } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useInterval,
+  useRef,
+} from "react";
 import {
   Button,
   StyleSheet,
@@ -9,12 +15,15 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { useFonts } from "expo-font";
 import { Font } from "expo";
 import Spinner from "react-native-loading-spinner-overlay";
 import { AuthContext } from "../context/AuthContext";
+
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -22,6 +31,14 @@ import axios from "axios";
 import { Buffer } from "buffer";
 
 import { useFocusEffect } from "@react-navigation/native";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Home = () => {
   const {
@@ -42,13 +59,22 @@ const Home = () => {
   const [hostOutputStatus, setHostOutputStatus] = useState();
   const [allData, setAllData] = useState();
 
-  const[now, setNow] = useState(null);
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const [data, setData] = useState(null);
 
-  const getData = async () => {
-    setNow(new Date());
+  const [alarm, setAlarm] = useState({});
+  const [isSent, setIsSent] = useState(true);
+  const [oldSent, setOldSent] = useState(false);
 
+  const [hostDown, setHostDown] = useState("null");
+
+  var verify = true;
+
+  const getData = async () => {
     // Função que irá pegar os dados (host + check) via API do servidor Nagios.
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
       "base64"
@@ -63,7 +89,6 @@ const Home = () => {
     );
     const data = await resp.json();
     const propertyNames = Object.values(data.data.hostlist);
-    // console.log(propertyNames)
     setData(propertyNames);
   };
   // Esta função deixa automática as chamadas de API acima.
@@ -71,13 +96,54 @@ const Home = () => {
     const interval = setInterval(() => {
       console.log("This will run every second! " + Date());
       getData();
+      // getNotification();
     }, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    const interval2 = setInterval(() => {
+      getNotification();
+    }, 5000);
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+      clearInterval(interval2);
+      console.log("Disparado !!!!!!!!!!");
+    };
+  }, []);
+
+  const getNotification = async () => {
+    console.log(verify);
+    if (verify) {
+      await sendPushNotification(expoPushToken, alarm, "down");
+      verify = false;
+    }
+  };
 
   // Função que renderiza os itens na tela. (Host + Output de seu monitoramento + icon).
   const Item = ({ user, index, description, status }) => (
     <View style={styles.item}>
+      {status == 4 ? setAlarm(user) : null}
       <View style={styles.avatarContainer}>
         {status == 4 ? (
           <Icon name="server-security" size={25} color="red" />
@@ -86,7 +152,12 @@ const Home = () => {
         )}
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity
+      // onPress={async () => {
+      //   await sendPushNotification(expoPushToken, user, description);
+      //   console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+      // }}
+      >
         <Text style={styles.wrapText}>Host: {user}</Text>
         <Text style={styles.wrapText}>{description}</Text>
       </TouchableOpacity>
@@ -118,6 +189,58 @@ const Home = () => {
   );
 };
 
+async function sendPushNotification(expoPushToken, user, description) {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title: "Data-X Alert !",
+    body: "Problem with server: " + user,
+    data: { someData: "" + description },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    // console.log(token);
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,7 +248,7 @@ const styles = StyleSheet.create({
   },
   indicator: {
     flex: 1,
-    marginTop: '60%',
+    marginTop: "60%",
     justifyContent: "center",
   },
   text: {
@@ -163,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 20,
     borderRadius: 15,
-    width: '90%',
+    width: "90%",
     marginLeft: 20,
     backgroundColor: "#fff",
     shadowColor: "#000",

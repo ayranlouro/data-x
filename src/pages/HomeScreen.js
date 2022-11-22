@@ -48,7 +48,7 @@ const HomeScreen = () => {
         }}
       />
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
         options={{
@@ -56,14 +56,14 @@ const HomeScreen = () => {
             <Feather name="bar-chart-2" size={size} color={color} />
           ),
         }}
-      />
+      /> */}
 
       <Tab.Screen
         name="About"
         component={AboutScreen}
         options={{
           tabBarIcon: ({ size, color }) => (
-            <Feather name="info" size={size} color={color} />
+            <Feather name="help-circle" size={size} color={color} />
           ),
         }}
       />
