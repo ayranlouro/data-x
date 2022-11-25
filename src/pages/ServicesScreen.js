@@ -112,6 +112,7 @@ const ServiceScreen = () => {
         setValue={setValue}
         setItems={setItems}
         style={[styles.dropdown]}
+        dropDownContainerStyle={styles.dropdownContainer}
       />
       {isLoading ? (
         <ActivityIndicator style={styles.indicator} size="large" />
@@ -130,18 +131,12 @@ const ServiceScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: -50,
   },
   dropdown: {
-    marginTop: 20,
+    alignSelf: "center",
     width: "90%",
-    marginLeft: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 5,
-    borderRadius: 20,
-    backgroundColor: "#fff",
+    borderRadius: 15,
+    borderColor: "#ddd",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -149,7 +144,12 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 20,
-    padding: 10,
+  },
+  dropdownContainer: {
+    alignSelf: "center",
+    width: "90%",
+    marginTop: 5,
+    borderColor: "#ddd",
   },
   indicator: {
     flex: 1,
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: "row",
-    marginBottom: 20,
+    marginBottom: 15,
     borderRadius: 15,
     backgroundColor: "#fff",
     shadowColor: "#000",
