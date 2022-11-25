@@ -1,15 +1,6 @@
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-} from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
-
-import DefaultImage from '../../assets/logo.png';
-
+import DefaultImage from "../../assets/logo.png";
 const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
 
 const About = () => {
@@ -19,10 +10,7 @@ const About = () => {
       <Text style={styles.paraStyle}> Data-X 😀 </Text>
 
       <View>
-        <Image
-          style={styles.imgStyle}
-          source={{uri: DEFAULT_IMAGE}}
-        />
+        <Image style={styles.imgStyle} source={{ uri: DEFAULT_IMAGE }} />
       </View>
 
       <View style={styles.aboutLayout}>
@@ -54,7 +42,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginTop: 50,
     marginBottom: 10,
-    fontFamily: "JosefinSans_700Bold",
   },
   paraStyle: {
     fontSize: 18,
@@ -72,7 +59,6 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontWeight: "500",
     marginVertical: 15,
-    fontFamily: "JosefinSans_700Bold",
     alignSelf: "center",
   },
   aboutPara: {
