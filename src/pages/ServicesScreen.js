@@ -5,31 +5,16 @@ import {
   View,
   StyleSheet,
   Image,
-  ScrollView,
-  StatusBar,
 } from "react-native";
-import React, { Component, useEffect, useState, useContext } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../context/AuthContext";
 import { Buffer } from "buffer";
-
 import DropDownPicker from "react-native-dropdown-picker";
-
 import { useFocusEffect } from "@react-navigation/native";
 
-const BG_IMAGE = "";
-
 const ServiceScreen = () => {
-  const {
-    userInfo,
-    logout,
-    login,
-    setStatusUser,
-    StatusUser,
-    username,
-    password,
-    serverip,
-  } = useContext(AuthContext);
+  const { username, password, serverip } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [isLoading, setisLoading] = useState(true);
 
@@ -41,14 +26,6 @@ const ServiceScreen = () => {
     { label: "Time elapsed 8h", value: "8" },
     { label: "Time elapsed 4h", value: "4" },
   ]);
-
-  useFocusEffect(() => {
-    const interval = setInterval(() => {
-      console.log("ALERTS DISPARADO " + Date());
-      getListAlerts();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const getListAlerts = () => {
     if (value === "24") {
@@ -80,13 +57,21 @@ const ServiceScreen = () => {
       .then((resJson) => {
         const propertyNames = Object.values(resJson.data.alertlist);
         setData(propertyNames);
-        console.log(data);
       })
       .catch((error) => {
-        console.log("Request API Error", error);
+        alert("Request API Error", error);
       })
       .finally(() => setisLoading(false));
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const interval = setInterval(() => {
+        getListAlerts();
+      }, 5000);
+      return () => clearInterval(interval);
+    }, [getListAlerts])
+  );
 
   const renderItem = ({ item, index }) => {
     return (
@@ -149,10 +134,10 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     marginTop: 20,
-    width: '90%',
+    width: "90%",
     marginLeft: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     flexDirection: "row",
     marginBottom: 5,
     borderRadius: 20,
@@ -176,8 +161,8 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   wrapText: {
     flex: 1,

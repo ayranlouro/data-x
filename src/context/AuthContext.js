@@ -1,9 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { createContext, useState } from "react";
-
-import Alert from "react-native";
-
 import { Buffer } from "buffer";
 
 export const AuthContext = createContext();
@@ -12,13 +9,13 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [StatusUser, setStatusUser] = useState("");
-  
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [serverip, setServerIP] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  
+
   const login = async (username, password, serverip) => {
     setIsLoading(true);
     const token = Buffer.from(`${username}:${password}`, "utf8").toString(
@@ -35,7 +32,6 @@ export const AuthProvider = ({ children }) => {
       })
       .then((res) => {
         let userInfo = res.data;
-        // console.log(userInfo.result);
         setUserInfo(userInfo);
         setUsername(username);
         setPassword(password);
@@ -45,7 +41,6 @@ export const AuthProvider = ({ children }) => {
         setStatusUser("Passed");
       })
       .catch((e) => {
-        console.log(`Login error ${e}`);
         setIsLoading(false);
         setStatusUser("Failed");
         setErrorStatus(true);
@@ -56,7 +51,6 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setIsLoading(true);
     AsyncStorage.removeItem("userInfo");
-    // console.log(AsyncStorage.removeItem("userInfo"));
     setUserInfo({});
     setIsLoading(false);
     setStatusUser("Passed");
@@ -73,7 +67,8 @@ export const AuthProvider = ({ children }) => {
         password,
         serverip,
         errorStatus,
-        errorMsg
+        setErrorStatus,
+        errorMsg,
       }}
     >
       {children}
