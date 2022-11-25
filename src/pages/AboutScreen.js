@@ -1,24 +1,51 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Linking,
+  Touchable,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import DefaultImage from "../../assets/logo.png";
 const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
+import { Entypo } from "@expo/vector-icons";
 
 const About = () => {
   return (
     <View style={styles.aboutContainer}>
-      <Text style={styles.mainHeader}> Aplicativo de monitoramento </Text>
-      <Text style={styles.paraStyle}> Data-X 😀 </Text>
-
       <View>
         <Image style={styles.imgStyle} source={{ uri: DEFAULT_IMAGE }} />
       </View>
 
       <View style={styles.aboutLayout}>
-        <Text style={styles.aboutSubHeader}> Sobre este aplicativo. </Text>
-        <Text style={[styles.paraStyle, styles.aboutPara]}>
-          Este aplicativo visa mostrar o monitoramento dos eventos de servidores
-          que se comunicam com a aplicação Nagios.
+        <Text style={styles.paraStyle}>
+          Data-X é um aplicativo desenvolvido para visualizar informações do
+          monitoramento de servidores que utilizam como base a ferramenta
+          Nagios.
         </Text>
+        <View style={[styles.paraStyle]}>
+          <Text style={styles.paraStyle}>Desenvolvido por: </Text>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => Linking.openURL("https://github.com/ayranlouro/")}
+          >
+            <View style={styles.btnView}>
+              <Entypo name="github" size={24} color="black" />
+              <Text style={styles.btnText}>@ayranlouro</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btn}
+            onPress={() => Linking.openURL("https://github.com/mtsgsr/")}
+          >
+            <View style={styles.btnView}>
+              <Entypo name="github" size={24} color="black" />
+              <Text style={styles.btnText}>@mtsgsr</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -33,47 +60,40 @@ const styles = StyleSheet.create({
   imgStyle: {
     width: 150,
     height: 150,
-    borderRadius: 100,
-  },
-  mainHeader: {
-    fontSize: 18,
-    color: "#344055",
-    textTransform: "uppercase",
-    fontWeight: "500",
-    marginTop: 50,
-    marginBottom: 10,
+    marginVertical: 25,
   },
   paraStyle: {
     fontSize: 18,
     color: "#7d7d7d",
     paddingBottom: 30,
+    textAlign: "center",
   },
   aboutLayout: {
-    backgroundColor: "#070618",
-    paddingHorizontal: 30,
-    marginVertical: 30,
-  },
-  aboutSubHeader: {
     fontSize: 18,
-    color: "#fff",
-    textTransform: "uppercase",
-    fontWeight: "500",
-    marginVertical: 15,
+    color: "#7d7d7d",
+    paddingBottom: 30,
+    paddingHorizontal: 30,
+  },
+  btn: {
     alignSelf: "center",
+    width: "50%",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#ddd",
+    marginBottom: 10,
   },
-  aboutPara: {
-    color: "#fff",
-  },
-  menuContainer: {
-    width: "100%",
+  btnView: {
+    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
+    alignItems: "center",
   },
-
-  iconStyle: {
-    width: "100%",
-    height: 50,
-    aspectRatio: 1,
+  btnText: {
+    color: "#274060",
+    fontSize: 16,
+    marginLeft: 10,
   },
 });
 
