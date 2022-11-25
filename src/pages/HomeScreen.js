@@ -27,7 +27,7 @@ const HomeScreen = () => {
       }}
     >
       <Tab.Screen
-        name="Servers"
+        name="Servidores"
         component={Home}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -38,7 +38,7 @@ const HomeScreen = () => {
       />
 
       <Tab.Screen
-        name="Alerts"
+        name="Alertas"
         component={ServicesScreen}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -48,7 +48,7 @@ const HomeScreen = () => {
       />
 
       <Tab.Screen
-        name="About"
+        name="Sobre"
         component={AboutScreen}
         options={{
           tabBarIcon: ({ size, color }) => (
@@ -58,7 +58,7 @@ const HomeScreen = () => {
       />
 
       <Tab.Screen
-        name="Logout"
+        name="Desconectar"
         children={logout}
         options={{
           tabBarIcon: ({ size, color }) => (
