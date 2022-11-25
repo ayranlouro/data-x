@@ -1,79 +1,54 @@
-import React, { useContext, useState, useEffect, useInterval } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
-  Button,
   StyleSheet,
   Text,
   View,
   FlatList,
   SafeAreaView,
-  Image,
   TouchableOpacity,
-  Modal,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
-import { useFonts } from "expo-font";
-import { Font } from "expo";
 import Spinner from "react-native-loading-spinner-overlay";
 import { AuthContext } from "../context/AuthContext";
-
+import { Buffer } from "buffer";
+import { useFocusEffect } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import axios from "axios";
-import { Buffer } from "buffer";
-
-import { useFocusEffect } from "@react-navigation/native";
-
 const Home = () => {
-  const {
-    userInfo,
-    isLoading,
-    logout,
-    login,
-    setStatusUser,
-    StatusUser,
-    username,
-    password,
-    serverip,
-  } = useContext(AuthContext);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [hostModalName, setHostModalName] = useState();
-  const [hostOutput, setHostOutput] = useState();
-  const [hostOutputStatus, setHostOutputStatus] = useState();
-  const [allData, setAllData] = useState();
-
-  const[now, setNow] = useState(null);
-
+  const { isLoading, username, password, serverip } = useContext(AuthContext);
   const [data, setData] = useState(null);
 
   const getData = async () => {
-    setNow(new Date());
-
-    // Função que irá pegar os dados (host + check) via API do servidor Nagios.
-    const token = Buffer.from(`${username}:${password}`, "utf8").toString(
-      "base64"
-    );
-    const resp = await fetch(
-      `http://${serverip}/nagios/cgi-bin/statusjson.cgi?query=hostlist&details=true`,
-      {
-        headers: {
-          Authorization: "Basic " + token,
-        },
-      }
-    );
-    const data = await resp.json();
-    const propertyNames = Object.values(data.data.hostlist);
-    // console.log(propertyNames)
-    setData(propertyNames);
+    try {
+      // Função que irá pegar os dados (host + check) via API do servidor Nagios.
+      const token = Buffer.from(`${username}:${password}`, "utf8").toString(
+        "base64"
+      );
+      const resp = await fetch(
+        `http://${serverip}/nagios/cgi-bin/statusjson.cgi?query=hostlist&details=true`,
+        {
+          headers: {
+            Authorization: "Basic " + token,
+          },
+        }
+      );
+      const data = await resp.json();
+      const propertyNames = Object.values(data.data.hostlist);
+      setData(propertyNames);
+    } catch (error) {
+      alert(error);
+    }
   };
+
   // Esta função deixa automática as chamadas de API acima.
-  useFocusEffect(() => {
-    const interval = setInterval(() => {
-      console.log("This will run every second! " + Date());
-      getData();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const interval = setInterval(() => {
+        getData();
+      }, 5000);
+      return () => clearInterval(interval);
+    }, [getData])
+  );
 
   // Função que renderiza os itens na tela. (Host + Output de seu monitoramento + icon).
   const Item = ({ user, index, description, status }) => (
@@ -125,7 +100,7 @@ const styles = StyleSheet.create({
   },
   indicator: {
     flex: 1,
-    marginTop: '60%',
+    marginTop: "60%",
     justifyContent: "center",
   },
   text: {
@@ -163,7 +138,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginBottom: 20,
     borderRadius: 15,
-    width: '90%',
+    width: "90%",
     marginLeft: 20,
     backgroundColor: "#fff",
     shadowColor: "#000",
@@ -176,7 +151,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   avatarContainer: {
-    // backgroundColor: "#D9D9D9",
     borderRadius: 100,
     height: 60,
     width: 60,
