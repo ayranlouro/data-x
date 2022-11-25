@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Text,
   TextInput,
@@ -13,13 +13,13 @@ import { AuthContext } from "../context/AuthContext";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Checkbox from "expo-checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [serverip, setServerip] = useState(null);
-  const { isLoading, login, errorStatus, errorMsg } = useContext(AuthContext);
+  const { isLoading, login, errorStatus, setErrorStatus, errorMsg } =
+    useContext(AuthContext);
   const [isChecked, setChecked] = useState(false);
   const [secureText, setSecureText] = useState(true);
   const [eyeName, setEyeName] = useState("eye");
@@ -43,44 +43,34 @@ const LoginScreen = ({ navigation }) => {
       await AsyncStorage.setItem("password", password);
       await AsyncStorage.setItem("serverip", serverip);
       await AsyncStorage.setItem("checked", isChecked.toString());
-    } catch (e) {
-      // saving error
-      alert(e);
+    } catch (error) {
+      alert(error);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      const getData = async () => {
-        try {
-          const user = await AsyncStorage.getItem("username");
-          const pass = await AsyncStorage.getItem("password");
-          const server = await AsyncStorage.getItem("serverip");
-          const checked = await AsyncStorage.getItem("checked");
-          if (user !== null && pass !== null && server !== null) {
-            // value previously stored
-            setUsername(user);
-            setPassword(pass);
-            setServerip(server);
-            if (checked === "true") {
-              setChecked(true);
-            }
+  useEffect(() => {
+    setErrorStatus(false);
+    const getData = async () => {
+      try {
+        const user = await AsyncStorage.getItem("username");
+        const pass = await AsyncStorage.getItem("password");
+        const server = await AsyncStorage.getItem("serverip");
+        const checked = await AsyncStorage.getItem("checked");
+        if (user !== null && pass !== null && server !== null) {
+          setUsername(user);
+          setPassword(pass);
+          setServerip(server);
+          if (checked === "true") {
+            setChecked(true);
           }
-        } catch (e) {
-          // error reading value
-          alert(e);
         }
-      };
+      } catch (error) {
+        alert(error);
+      }
+    };
 
-      getData();
-
-      return () => {
-        isActive = false;
-      };
-    }, [])
-  );
+    getData();
+  }, []);
 
   const handleEye = () => {
     eyeName === "eye" ? setEyeName("eyeo") : setEyeName("eye");
@@ -161,7 +151,11 @@ const LoginScreen = ({ navigation }) => {
           >
             <Text style={styles.buttonText}>Acessar</Text>
           </TouchableOpacity>
-          {errorStatus == true ? <Text style={styles.errorMsg}>{errorMsg}</Text> : ""}
+          {errorStatus == true ? (
+            <Text style={styles.errorMsg}>{errorMsg}</Text>
+          ) : (
+            ""
+          )}
         </Animatable.View>
       </View>
     </KeyboardAwareScrollView>
@@ -174,8 +168,8 @@ const styles = StyleSheet.create({
     paddingStart: "5%",
     paddingEnd: "5%",
   },
-  errorMsg:{
-    color: 'white',
+  errorMsg: {
+    color: "white",
     backgroundColor: "#842029",
     borderColor: "#f5c2c7",
     // border: '1px solid transparent',
